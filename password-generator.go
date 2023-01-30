@@ -21,7 +21,7 @@ const (
 )
 
 func init() {
-	rand.Seed(time.Now().UnixNano()) //Seeding the random number generator using the current time
+	rand.Seed(time.Now().UnixNano()) //seeding the random number generator using the current time
 }
 
 func generatePassword() string {
