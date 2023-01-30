@@ -9,13 +9,13 @@ import (
 )
 
 const (
-	letterBytes    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" //a string of all lowercase and uppercase letters
-	specialBytes   = "!@#$%^&*()-_=+[]{}\\|;':\",.<>?"                      //a string of all special characters
-	numberBytes    = "0123456789"                                           //a string of all numbers
+	letterBytes    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" //lowercase and uppercase letters
+	specialBytes   = "!@#$%^&*()-_=+[]{}\\|;':\",.<>?"                      //special characters
+	numberBytes    = "0123456789"                                           //all numbers
 	allBytes       = letterBytes + specialBytes + numberBytes               //a concatenation of all characters
 	passwordLength = 12                                                     //the length of the generated password
 	saltLength     = 16                                                     //the length of the salt used in the hashing
-	memory         = 32 * 1024                                              //memory used in the Argon2 hashing algorithm
+	memory         = 32 * 1024                                              //memory used in the argon2 hashing algorithm
 	threads        = 4                                                      //number of threads used in the Argon2 hashing algorithm
 	times          = 3                                                      //number of iterations used in the Argon2 hashing algorithm
 )
@@ -32,25 +32,25 @@ func generatePassword() string {
 	return string(result) //returning the password as a string
 }
 
-func hashingSalting(password string) []byte {
+func hashingSalting(password string) string {
 	password_to_hash := []byte(password) //converting the password string to a byte slice
-	salt := make([]byte, saltLength)     //creating a byte slice of length saltLength
+	salt := make([]byte, saltLength)     //creating a byte slice of length saltLength to store the salt
 	_, err := rand.Read(salt)            //generating random salt
 
 	if err != nil {
 		panic(err) //if an error occurs during salt generation, panic
 	}
 
-	salted_hash := argon2.IDKey(password_to_hash, salt, times, memory, threads, 32) //hashing the password and salt using Argon2
+	hash := hex.EncodeToString(argon2.IDKey(password_to_hash, salt, times, memory, threads, 32)) //creating the hash using argon2
 
-	return salted_hash //returning the salted hash
+	return hash //returning the hash
 
 }
 
 func main() {
-	password := generatePassword()                              //generating the password
-	salted_hash := hex.EncodeToString(hashingSalting(password)) //hashing and salting the password and encoding the result to hexadecimal string representation
-	println(password)                                           //printing the password
-	println(salted_hash)                                        //printing the salted hash
+	password := generatePassword()             //generating the password
+	hash := hashingSalting(password)           //obtaining the hash from the salted password and encoding the result to hexadecimal string representation
+	println("Your secure password:", password) //printing the password
+	println("Your SHA-256 hash:", hash)        //printing the hash
 
 }
