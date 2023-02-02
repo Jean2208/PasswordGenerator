@@ -49,7 +49,7 @@ func hashingSalting(password string) string {
 
 func main() {
 	password := generatePassword()             //generating the password
-	hash := hashingSalting(password)           //obtaining the hash from the salted password and encoding the result to hexadecimal string representation
+	hash := hashingSalting(password)           //obtaining the hash from the salted password
 	println("Your secure password:", password) //printing the password
 	println("Your SHA-256 hash:", hash)        //printing the hash
 
